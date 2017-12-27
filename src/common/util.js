@@ -28,7 +28,7 @@ export function getTypeOfArray(arr) {
  * Get type definition by array num
  * @param {Number} num 
  */
-export function getTypeOfArraByNum(num) {
+export function getTypeOfArrayByNum(num) {
     return bufferTypeMap[num];
 }
 
@@ -101,8 +101,20 @@ export function isNumber(val) {
     return (typeof val === 'number') && !isNaN(val);
 }
 
+/**
+ * Check whether the object is a string
+ * @param {Object} obj
+ * @return {Boolean}
+ * @memberOf Util
+ */
+export function isString(obj) {
+    if (isNil(obj)) {
+        return false;
+    }
+    return typeof obj === 'string' || (obj.constructor !== null && obj.constructor === String);
+}
 
-let uid = 0;
+let uid = 1;
 
 export function UID() {
     return uid++;

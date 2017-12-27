@@ -1,5 +1,5 @@
-export const Ref = { type : 'Int64', num : 0, bytesCount : 8 };
-export const GLlocation = { type : 'Int64', num : 1, bytesCount : 8 };
+export const GLref = { type : 'Uint32', num : 0, bytesCount : 4 };
+export const GLlocation = { type : 'Uint32', num : 1, bytesCount : 4 };
 export const GLenum = { type : 'Uint32', num : 100, bytesCount : 4 };
 export const GLboolean = { type : 'Boolean', num : 101, bytesCount : 1 };
 export const GLbitfield = { type : 'Uint32', num : 102, bytesCount : 4 };
