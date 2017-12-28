@@ -15,9 +15,11 @@ import {
     GLclampf,
     GLstring,
     GLarraybuffer,
+    GLimage,
     GLref,
     GLlocation
 } from './gl-types';
+import { isNumber } from './misc';
 // method tables
 export const GLcommands = {
     activeTexture :	[1000, GLenum],
@@ -60,7 +62,7 @@ export const GLcommands = {
         }
         return argTypes;
     },
-    checkFramebufferStatus :	[1014, GLenum],
+    // checkFramebufferStatus :	[1014, GLenum],
     clear :	[1015, GLbitfield],
     clearColor :	[1016, GLclampf, GLclampf, GLclampf, GLclampf],
     clearDepth :	[1017, GLclampf],
@@ -70,45 +72,43 @@ export const GLcommands = {
     compileShader :	[1021, GLref],
     compressedTexImage2D :	function (...args) {
         const argTypes = [
-            [10220, GLenum, GLint, GLenum, GLsizei, GLsizei, GLint, GLarraybuffer],
+            [10220, GLenum, GLint, GLenum, GLsizei, GLsizei, GLint, GLimage],
             //webgl 2 methods
             [20221, GLenum, GLint, GLenum, GLsizei, GLsizei, GLint, GLintptr],
-            [20222, GLenum, GLint, GLenum, GLsizei, GLsizei, GLint, GLarraybuffer, GLuint, GLuint]
+            [20222, GLenum, GLint, GLenum, GLsizei, GLsizei, GLint, GLimage, GLuint, GLuint]
         ];
         if (args.length === 9) {
             return argTypes[2];
         } else if (isNumber(args[6])) {
             return argTypes[1];
         } else if (args.length > 0) {
-            return args[0];
+            return argTypes[0];
         }
         return argTypes;
     },
     compressedTexSubImage2D :	function (...args) {
-        //TODO
+        //TODO miss webgl 2 methods
+        //webgl 2 methods have optional parameters
         const argTypes = [
-            [10230, GLenum, GLint, GLenum, GLsizei, GLsizei, GLint, GLarraybuffer],
+            [10230, GLenum, GLint, GLint, GLint, GLsizei, GLsizei, GLenum, GLimage],
             //webgl 2 methods
-            [20231, GLenum, GLint, GLenum, GLsizei, GLsizei, GLint, GLintptr],
-            [20232, GLenum, GLint, GLenum, GLsizei, GLsizei, GLint, GLarraybuffer, GLuint, GLuint]
+            // [20231, GLenum, GLint, GLint, GLint, GLsizei, GLsizei, GLenum, GLimage],
+            // [20232, GLenum, GLint, GLenum, GLsizei, GLsizei, GLint, GLimage, GLuint, GLuint]
         ];
-        if (args.length === 9) {
-            return argTypes[2];
-        } else if (isNumber(args[6])) {
-            return argTypes[1];
+        if (args.length === 8) {
+            return argTypes[0];
         } else if (args.length > 0) {
-            return args[0];
+            return argTypes[0];
         }
         return argTypes;
     },
-    //TODO 第二个参数确定是GLint而不是GLenum吗
-    copyTexImage2D :	[1024, GLenum, GLint, GLint, GLint, GLint, GLsizei, GLsizei, GLint],
+    copyTexImage2D :	[1024, GLenum, GLint, GLenum, GLint, GLint, GLsizei, GLsizei, GLint],
     copyTexSubImage2D :	[1025, GLenum, GLint, GLint, GLint, GLint, GLint, GLint, GLsizei, GLsizei],
     createBuffer :	[1026, GLref],
     createFramebuffer :	[10276, GLref],
     createProgram :	[10286, GLref],
     createRenderbuffer :	[10296, GLref],
-    createShader :	[1030, GLenum6, GLref],
+    createShader :	[1030, GLenum, GLref],
     createTexture :	[10316, GLref],
     cullFace :	[1032, GLenum],
     deleteBuffer :	[1033, GLref],
@@ -136,7 +136,7 @@ export const GLcommands = {
     //doesn't need to record getXXX for playback
     // getActiveAttrib :	[1055, GLref, GLuint],
     // getActiveUniform :	[1056, GLref, GLuint],
-    // getAttachedShaders :	[1057, GLref],
+    getAttachedShaders :	[1057, GLref, [GLref, GLref]],
     getAttribLocation :	[1058, GLref, GLstring, GLlocation],
     // getBufferParameter :	1059,
     // getContextAttributes :	1060,
@@ -185,11 +185,36 @@ export const GLcommands = {
     stencilOpSeparate :	[1101, GLenum, GLenum, GLenum, GLenum],
     texImage2D :	function (...args)  {
         //TODO 1102
+        const argTypes = [
+            [11020, GLenum, GLint, GLenum, GLsizei, GLsizei, GLint, GLenum, GLenum, GLimage],
+            [11021, GLenum, GLint, GLenum, GLenum, GLenum, GLimage],
+            //webgl 2 methods
+            // [20231, GLenum, GLint, GLint, GLint, GLsizei, GLsizei, GLenum, GLimage],
+            // [20232, GLenum, GLint, GLenum, GLsizei, GLsizei, GLint, GLimage, GLuint, GLuint]
+        ];
+        if (args.length === 9) {
+            return argTypes[0];
+        } else if (args.length > 0) {
+            return argTypes[1];
+        }
+        return argTypes;
     },
     texParameterf :	[11030, GLenum, GLenum, GLfloat],
     texParameteri :	[11031, GLenum, GLenum, GLint],
     texSubImage2D :	function (...args)  {
-        //TODO 1104
+        const argTypes = [
+            [11040, GLenum, GLint, GLint, GLint, GLsizei, GLsizei, GLenum, GLenum, GLimage],
+            [11041, GLenum, GLint, GLint, GLint, GLenum, GLenum, GLimage]
+            //webgl 2 methods
+            // [20231, GLenum, GLint, GLint, GLint, GLsizei, GLsizei, GLenum, GLimage],
+            // [20232, GLenum, GLint, GLenum, GLsizei, GLsizei, GLint, GLimage, GLuint, GLuint]
+        ];
+        if (args.length === 9) {
+            return argTypes[0];
+        } else if (args.length > 0) {
+            return argTypes[1];
+        }
+        return argTypes;
     },
 
     uniform1f :	[11050, GLref, GLfloat],
@@ -240,6 +265,6 @@ export const GLrefCreators = {
     'getUniformLocation' : 1
 };
 
-export const locationGetters = {
+export const GLlocationGetters = {
     'getAttribLocation' : 1
 };

@@ -16,6 +16,7 @@ export const GLfloat = { type : 'Float32', num : 112, bytesCount : 4 };
 export const GLclampf = { type : 'Float32', num : 113, bytesCount : 4 };
 export const GLstring = { type : 'String', num : 114, bytesCount : 0 };
 export const GLarraybuffer = { type : 'ArrayBuffer', num : 115, bytesCount : 0 };
+export const GLimage = { type:'ArrayBuffer', num : 116, bytesCount : 0 };
 
 export const ArrayBufferTypes = {
     GLInt8Array : { type : Int8Array, num : 200 },

@@ -1,7 +1,7 @@
-import { refCreators, locationGetters } from './common/gl-commands';
-import { getCommandTypes, GL_REF_KEY, UID, getTypeOfArray, getTypeOfArrayByNum, isString } from './common/util';
-import { GLref, GLlocation, GLstring, GLarraybuffer } from './gl-types';
-import { ArrayBufferTypes } from './common/gl-types';
+import { GLrefCreators, GLlocationGetters } from './common/gl-commands';
+import { getCommandTypes, GL_REF_KEY, getTypeOfArray, getTypeOfArrayByNum } from './common/util';
+import { UID, isString } from './common/misc';
+import { GLref, GLlocation, GLstring, GLarraybuffer, ArrayBufferTypes } from './common/gl-types';
 
 export default class GLBufferWriter {
     constructor(options = {}) {
@@ -48,7 +48,7 @@ export default class GLBufferWriter {
 
     _saveCommand(name, ...args) {
         const commandTypes = getCommandTypes(name, ...args);
-        if (refCreators[name]) {
+        if (GLrefCreators[name]) {
             const obj = args[args.length - 1];
             if (!obj[GL_REF_KEY]) {
                 const key = UID();
@@ -112,7 +112,9 @@ export default class GLBufferWriter {
                 //write array or string value
                 this._writeBuffer(buf, value, bufferTypes[btPointer++], pointer, bufferTypes[btPointer++]);
                 bytesCount = bufferTypes[btPointer];
-            }  else {
+            } else if (type === GLimage) {
+
+            }else {
                 //write common values
                 view['set' + types.type](pointer, value);
             }
@@ -155,12 +157,23 @@ export default class GLBufferWriter {
                 const arr = args[i - 1];
                 const arrType = getTypeOfArray(arr);
                 bytesCount = arr.length * arrType.type.BYTES_PER_ELEMENT;
+                //[arr type][bytes count]
                 bufferTypes.push(arrType.num, bytesCount);
             } else if (types[i] === GLstring) {
                 const str = args[i - 1];
                 bytesCount = str.length * 2;
                 const arrType = ArrayBufferTypes.GLUint32Array;
-                bufferTypes.push(arrType.num, bytesCount);
+                //[bytes count]
+                bufferTypes.push(bytesCount);
+            } else if (types[i] === GLimage) {
+                const img = args[i - 1];
+                const imgData = this._readImage(img);
+                bytesCount = imgData.data.length;
+                const w = imgData.width,
+                    h = imgData.height;
+                const arrType = ArrayBufferTypes.GLUint8ClampedArray;
+                //[width][height]
+                bufferTypes.push(w, h);
             } else {
                 bytesCount = types[i].bytesCount;
             }
