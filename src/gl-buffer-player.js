@@ -1,7 +1,7 @@
-import { isFunction } from "./common/misc";
-import { getCommandTypesByNum, getTypeOfArrayByNum } from "./common/util";
-import { GLrefCreators, GLlocationGetters } from "./common/gl-commands";
-import { GLref, GLlocation } from "./common/gl-types";
+import { isFunction } from './common/misc';
+import { getCommandTypesByNum, getTypeOfArrayByNum } from './common/util';
+import { GLrefCreators, GLlocationGetters } from './common/gl-commands';
+import { GLref, GLlocation, GLarraybuffer, GLstring, GLimage } from './common/gl-types';
 
 export default class GLBufferPlayer {
     constructor() {
@@ -9,26 +9,26 @@ export default class GLBufferPlayer {
         this.refMap = {};
     }
 
-    addCommands(data) {
+    addBuffer(data) {
         this._parse(data);
         return this;
     }
 
+    getCommands() {
+        return this.commands;
+    }
+
     playback(gl) {
-        if (!this.commands) {
-            return this;
-        }
-        for (let i = 0, l = this.commands.length; i < l; i++) {
-            const command = this.commands[i];
-            const name = command.name;
-            const types = command.types;
-            const args = this._prepareArgs(types, command.args);
-            const result = gl[name].apply(gl, args);
-            const ref = command.ref;
+        const commands = this.getCommands();
+        commands.forEach(c => {
+            const name = c.name, ref = c.command.ref;
+            const rargs = this._prepareArgs(c);
+            const result = gl[name].apply(gl, rargs);
             if (ref) {
                 this.refMap[ref] = result;
             }
-        }
+        });
+
         return this;
     }
 
@@ -41,51 +41,54 @@ export default class GLBufferPlayer {
         this.refMap = {};
     }
 
-    _prepareArgs(types, args) {
-        const name = types[0];
-        const isRef = GLrefCreators[name] || GLlocationGetters[name];
-        const l = isRef ? types.length - 1 : types.length;
+    _prepareArgs(command) {
+        // const name = command.name;
+        const types = command.types;
+        const args = command.args;
+        // const isRef = command.ref;
         const result = [];
-        for (let i = 1; i < l; i++) {
+        for (let i = 0, l = types.length; i < l; i++) {
             const type = types[i];
-            const v = args[i - 1];
+            const v = args[i];
             if (type === GLref || type === GLlocation) {
                 //a reference object or location
                 result.push(this.refMap[v]);
             } else {
-                result.push(v)
+                result.push(v);
             }
         }
         return result;
     }
 
     _parse(data) {
-        const commands = new Uint32Array(data.commands);
-        const values = new DataView(data.values);
-        let cPt, vPt = 0;
+        const commands = data.commands;
+
+        let cPt = 0, vIdx = 0;
         while (cPt < commands.length) {
-            const c = this._readCommand(cPt, commands, vPt, values);
+            const values = new DataView(data.values[vIdx++]);
+            const c = this._readCommand(cPt, commands, values);
             cPt = c.cPt;
-            vPt = c.vPt;
             this.commands.push(c.command);
         }
     }
-    
-    _readCommand(cPt, comBuffer, vPt, values)  {
+
+    _readCommand(cPt, comBuffer, values)  {
         const commandNum = comBuffer[cPt++];
-        const types = getCommandTypesByNum(commandNum);
+        const commandTypes = getCommandTypesByNum(commandNum);
         //command method name
-        const name = types[0];
+        const name = commandTypes.name;
         //arguments
         const args = [];
         //result reference id
-        let ref = 0;
-        const isRef = GLrefCreators[name] || GLlocationGetters[name];        
-        for (let i = 1, l = types.length; i < l; i++) {
+        // let ref = 0;
+        // const isRef = GLrefCreators[name] || GLlocationGetters[name];
+        const types = commandTypes.argTypes;
+        let vPt = 0;
+        for (let i = 0, l = types.length; i < l; i++) {
             const type = types[i];
             let bytesCount = type.bytesCount;
             if (type === GLarraybuffer) {
-                //read value of array type 
+                //read value of array type
                 //[arr type][bytes count]
                 const arrType = getTypeOfArrayByNum(comBuffer[cPt++]).type;
                 bytesCount = comBuffer[cPt++];
@@ -104,29 +107,40 @@ export default class GLBufferPlayer {
                 bytesCount = w * h * 4;
                 const arr = this._readArray(vPt, values, Uint8ClampedArray, bytesCount);
                 const imageData = this._createImageData(arr, w, h);
-                args.push(ImageData);
+                args.push(imageData);
             } else {
                 //common values: int8/uint8/int16..
                 const v = values[`get${type.type}`](vPt);
-                if (isRef && i === l - 1) {
-                    //the last value if the reference id
-                    ref = v;
-                } else {
-                    args.push(v);
-                }
+                args.push(v);
             }
             vPt += bytesCount;
         }
+        let ref = 0;
+        const returnType = commandTypes.returnType;
+        if (returnType) {
+            if (Array.isArray(returnType)) {
+                ref = [];
+                const l = returnType.length;
+                for (let i = 0; i < l; i++) {
+                    const t = returnType[i].type;
+                    ref.push(values[`get${t}`](vPt));
+                    vPt += returnType[i].bytesCount;
+                }
+            } else {
+                ref = values[`get${returnType.type}`](vPt);
+                vPt += returnType.bytesCount;
+            }
+        }
+
         return {
             cPt,
-            vPt,
             command : {
                 name : name,
                 types : types,
                 args : args,
                 ref : ref
             }
-        }
+        };
     }
 
     _readArray(pt, values, arrType, arrSize) {

@@ -1,16 +1,12 @@
 import {
-    GLenum ,
+    GLenum,
     GLboolean,
-    GLbitfield ,
-    GLbyte,
-    GLshort ,
-    GLint ,
-    GLsizei ,
-    GLintptr ,
-    GLsizeiptr ,
-    GLubyte ,
-    GLushort ,
-    GLuint ,
+    GLbitfield,
+    GLint,
+    GLsizei,
+    GLintptr,
+    GLsizeiptr,
+    GLuint,
     GLfloat,
     GLclampf,
     GLstring,
@@ -22,23 +18,23 @@ import {
 import { isNumber } from './misc';
 // method tables
 export const GLcommands = {
-    activeTexture :	[1000, GLenum],
-    attachShader :	[1001, GLref, GLref],
-    bindAttribLocation :	[1002, GLlocation, GLuint, GLstring],
-    bindBuffer :	[1003, GLenum, GLref],
-    bindFramebuffer :	[1004, GLenum, GLref],
-    bindRenderbuffer :	[1005, GLenum, GLref],
-    bindTexture :	[1006, GLenum, GLref],
-    blendColor :	[1007, GLclampf, GLclampf, GLclampf, GLclampf],
-    blendEquation :	[1008, GLenum],
-    blendEquationSeparate :	[1009, GLenum, GLenum],
-    blendFunc :	[1010, GLenum, GLenum],
-    blendFuncSeparate :	[1011, GLenum, GLenum, GLenum, GLenum],
+    activeTexture :	{ num : 1000, argTypes : [GLenum], returnType : null },
+    attachShader :	{ num : 1001, argTypes : [GLref, GLref], returnType : null },
+    bindAttribLocation :	{ num : 1002, argTypes : [GLlocation, GLuint, GLstring], returnType : null },
+    bindBuffer :	{ num : 1003, argTypes : [GLenum, GLref], returnType : null },
+    bindFramebuffer :	{ num : 1004, argTypes : [GLenum, GLref], returnType : null },
+    bindRenderbuffer :	{ num : 1005, argTypes : [GLenum, GLref], returnType : null },
+    bindTexture :	{ num : 1006, argTypes : [GLenum, GLref], returnType : null },
+    blendColor :	{ num : 1007, argTypes : [GLclampf, GLclampf, GLclampf, GLclampf], returnType : null },
+    blendEquation :	{ num : 1008, argTypes : [GLenum], returnType : null },
+    blendEquationSeparate :	{ num : 1009, argTypes : [GLenum, GLenum], returnType : null },
+    blendFunc :	{ num : 1010, argTypes : [GLenum, GLenum], returnType : null },
+    blendFuncSeparate :	{ num : 1011, argTypes : [GLenum, GLenum, GLenum, GLenum], returnType : null },
     bufferData : function (...args) {
         const argTypes = [
-            [10120, GLenum, GLsizeiptr, GLenum],
-            [10122, GLenum, GLarraybuffer, GLenum, GLuint, GLuint],
-            [10121, GLenum, GLarraybuffer, GLenum]
+            { num : 10120, argTypes : [GLenum, GLsizeiptr, GLenum], returnType : null },
+            { num : 10122, argTypes : [GLenum, GLarraybuffer, GLenum, GLuint, GLuint], returnType : null },
+            { num : 10121, argTypes : [GLenum, GLarraybuffer, GLenum], returnType : null }
         ];
         if (isNumber(args[1])) {
             return argTypes[0];
@@ -51,9 +47,9 @@ export const GLcommands = {
     },
     bufferSubData : function (...args) {
         const argTypes = [
-            [10130, GLenum, GLintptr, GLarraybuffer],
+            { num : 10130, argTypes : [GLenum, GLintptr, GLarraybuffer], returnType : null },
             //a webgl 2 method
-            [20131, GLenum, GLintptr, GLarraybuffer, GLuint, GLuint]
+            { num : 20131, argTypes : [GLenum, GLintptr, GLarraybuffer, GLuint, GLuint], returnType : null }
         ];
         if (args.length === 3) {
             return argTypes[0];
@@ -62,20 +58,20 @@ export const GLcommands = {
         }
         return argTypes;
     },
-    // checkFramebufferStatus :	[1014, GLenum],
-    clear :	[1015, GLbitfield],
-    clearColor :	[1016, GLclampf, GLclampf, GLclampf, GLclampf],
-    clearDepth :	[1017, GLclampf],
-    clearStencil :	[1018, GLint],
-    colorMask :	[1019, GLclampf, GLclampf, GLclampf, GLclampf],
-    commit :	[1020],
-    compileShader :	[1021, GLref],
+    // checkFramebufferStatus : { num : 1014, argTypes : [GLenum], returnType : null },
+    clear :	{ num : 1015, argTypes : [GLbitfield], returnType : null },
+    clearColor :	{ num : 1016, argTypes : [GLclampf, GLclampf, GLclampf, GLclampf], returnType : null },
+    clearDepth :	{ num : 1017, argTypes : [GLclampf], returnType : null },
+    clearStencil :	{ num : 1018, argTypes : [GLint], returnType : null },
+    colorMask :	{ num : 1019, argTypes : [GLclampf, GLclampf, GLclampf, GLclampf], returnType : null },
+    commit :	{ num : 1020, argTypes : [], returnType : null },
+    compileShader :	{ num : 1021, argTypes : [GLref], returnType : null },
     compressedTexImage2D :	function (...args) {
         const argTypes = [
-            [10220, GLenum, GLint, GLenum, GLsizei, GLsizei, GLint, GLimage],
+            { num : 10220, argTypes : [GLenum, GLint, GLenum, GLsizei, GLsizei, GLint, GLimage], returnType : null },
             //webgl 2 methods
-            [20221, GLenum, GLint, GLenum, GLsizei, GLsizei, GLint, GLintptr],
-            [20222, GLenum, GLint, GLenum, GLsizei, GLsizei, GLint, GLimage, GLuint, GLuint]
+            { num : 20221, argTypes : [GLenum, GLint, GLenum, GLsizei, GLsizei, GLint, GLintptr], returnType : null },
+            { num : 20222, argTypes : [GLenum, GLint, GLenum, GLsizei, GLsizei, GLint, GLimage, GLuint, GLuint] }
         ];
         if (args.length === 9) {
             return argTypes[2];
@@ -90,7 +86,7 @@ export const GLcommands = {
         //TODO miss webgl 2 methods
         //webgl 2 methods have optional parameters
         const argTypes = [
-            [10230, GLenum, GLint, GLint, GLint, GLsizei, GLsizei, GLenum, GLimage],
+            { num : 10230, argTypes : [GLenum, GLint, GLint, GLint, GLsizei, GLsizei, GLenum, GLimage], returnType : null },
             //webgl 2 methods
             // [20231, GLenum, GLint, GLint, GLint, GLsizei, GLsizei, GLenum, GLimage],
             // [20232, GLenum, GLint, GLenum, GLsizei, GLsizei, GLint, GLimage, GLuint, GLuint]
@@ -102,42 +98,42 @@ export const GLcommands = {
         }
         return argTypes;
     },
-    copyTexImage2D :	[1024, GLenum, GLint, GLenum, GLint, GLint, GLsizei, GLsizei, GLint],
-    copyTexSubImage2D :	[1025, GLenum, GLint, GLint, GLint, GLint, GLint, GLint, GLsizei, GLsizei],
-    createBuffer :	[1026, GLref],
-    createFramebuffer :	[10276, GLref],
-    createProgram :	[10286, GLref],
-    createRenderbuffer :	[10296, GLref],
-    createShader :	[1030, GLenum, GLref],
-    createTexture :	[10316, GLref],
-    cullFace :	[1032, GLenum],
-    deleteBuffer :	[1033, GLref],
-    deleteFramebuffer :	[1034, GLref],
-    deleteProgram :	[1035, GLref],
-    deleteRenderbuffer :	[1036, GLref],
-    deleteShader :	[1037, GLref],
-    deleteTexture :	[1038, GLref],
-    depthFunc :	[1039, GLenum],
-    depthMask :	[1040, GLboolean],
-    depthRange :	[1041, GLclampf, GLclampf],
-    detachShader :	[1042, GLref, GLref],
-    disable :	[1043, GLenum],
-    disableVertexAttribArray :	[1044, Location],
-    drawArrays :	[1045, GLenum, GLint, GLsizei],
-    drawElements :	[1046, GLenum, GLsizei, GLenum, GLintptr],
-    enable :	[1047, GLenum],
-    enableVertexAttribArray :	[1048, Location],
-    finish :	[1049],
-    flush :	[1050],
-    framebufferRenderbuffer :	[1051, GLenum, GLenum, GLenum, GLref],
-    framebufferTexture2D :	[1052, GLenum, GLenum, GLenum, GLref, GLint],
-    frontFace :	[1053, GLenum],
-    generateMipmap :	[1054, GLenum],
+    copyTexImage2D :	{ num : 1024, argTypes : [GLenum, GLint, GLenum, GLint, GLint, GLsizei, GLsizei, GLint], returnType : null },
+    copyTexSubImage2D :	{ num : 1025, argTypes : [GLenum, GLint, GLint, GLint, GLint, GLint, GLint, GLsizei, GLsizei], returnType : null },
+    createBuffer :	{ num : 1026, argTypes : [], returnType : GLref },
+    createFramebuffer :	{ num : 10276, argTypes : [], returnType : GLref },
+    createProgram :	{ num : 10286, argTypes : [], returnType : GLref },
+    createRenderbuffer :	{ num : 10296, argTypes : [], returnType : GLref },
+    createShader :	{ num : 1030, argTypes : [GLenum], returnType : GLref },
+    createTexture :	{ num : 10316, argTypes : [], returnType : GLref },
+    cullFace :	{ num : 1032, argTypes : [GLenum], returnType : null },
+    deleteBuffer :	{ num : 1033, argTypes : [GLref], returnType : null },
+    deleteFramebuffer :	{ num : 1034, argTypes : [GLref], returnType : null },
+    deleteProgram :	{ num : 1035, argTypes : [GLref], returnType : null },
+    deleteRenderbuffer :	{ num : 1036, argTypes : [GLref], returnType : null },
+    deleteShader :	{ num : 1037, argTypes : [GLref], returnType : null },
+    deleteTexture :	{ num : 1038, argTypes : [GLref], returnType : null },
+    depthFunc :	{ num : 1039, argTypes : [GLenum], returnType : null },
+    depthMask :	{ num : 1040, argTypes : [GLboolean], returnType : null },
+    depthRange :	{ num : 1041, argTypes : [GLclampf, GLclampf], returnType : null },
+    detachShader :	{ num : 1042, argTypes : [GLref, GLref], returnType : null },
+    disable :	{ num : 1043, argTypes : [GLenum], returnType : null },
+    disableVertexAttribArray :	{ num : 1044, argTypes : [Location], returnType : null },
+    drawArrays :	{ num : 1045, argTypes : [GLenum, GLint, GLsizei], returnType : null },
+    drawElements :	{ num : 1046, argTypes : [GLenum, GLsizei, GLenum, GLintptr], returnType : null },
+    enable :	{ num : 1047, argTypes : [GLenum], returnType : null },
+    enableVertexAttribArray :	{ num : 1048, argTypes : [Location], returnType : null },
+    finish :	{ num : 1049, argTypes : [], returnType : null },
+    flush :	{ num : 1050, argTypes : [], returnType : null },
+    framebufferRenderbuffer :	{ num : 1051, argTypes : [GLenum, GLenum, GLenum, GLref], returnType : null },
+    framebufferTexture2D :	{ num : 1052, argTypes : [GLenum, GLenum, GLenum, GLref, GLint], returnType : null },
+    frontFace :	{ num : 1053, argTypes : [GLenum], returnType : null },
+    generateMipmap :	{ num : 1054, argTypes : [GLenum], returnType : null },
     //doesn't need to record getXXX for playback
-    // getActiveAttrib :	[1055, GLref, GLuint],
-    // getActiveUniform :	[1056, GLref, GLuint],
-    getAttachedShaders :	[1057, GLref, [GLref, GLref]],
-    getAttribLocation :	[1058, GLref, GLstring, GLlocation],
+    // getActiveAttrib :	{ num : 1055, argTypes : [GLref, GLuint], returnType : null },
+    // getActiveUniform :	{ num : 1056, argTypes : [GLref, GLuint], returnType : null },
+    getAttachedShaders :	{ num : 1057, argTypes : [GLref], returnType : [GLref, GLref] },
+    getAttribLocation :	{ num : 1058, argTypes : [GLref, GLstring], returnType : GLlocation },
     // getBufferParameter :	1059,
     // getContextAttributes :	1060,
     // getError :	1061,
@@ -154,10 +150,10 @@ export const GLcommands = {
     // getSupportedExtensions :	1072,
     // getTexParameter :	1073,
     // getUniform :	1074,
-    getUniformLocation :	[1075, GLref, GLstring, GLref],
+    getUniformLocation :	{ num : 1075, argTypes : [GLref, GLstring], returnType : GLref },
     // getVertexAttrib :	1076,
     // getVertexAttribOffset :	1077,
-    hint :	[1078, GLenum, GLenum],
+    hint :	{ num : 1078, argTypes : [GLenum, GLenum], returnType : null },
     //doesn't need isXXX for playback
     // isBuffer :	1079,
     // isContextLost :	1080,
@@ -167,27 +163,27 @@ export const GLcommands = {
     // isRenderbuffer :	1084,
     // isShader :	1085,
     // isTexture :	1086,
-    lineWidth :	[1087, GLfloat],
-    linkProgram :	[1088, GLref],
-    pixelStorei :	[1089, GLenum, GLint],
-    polygonOffset :	[1090, GLfloat, GLfloat],
+    lineWidth :	{ num : 1087, argTypes : [GLfloat], returnType : null },
+    linkProgram :	{ num : 1088, argTypes : [GLref], returnType : null },
+    pixelStorei :	{ num : 1089, argTypes : [GLenum, GLint], returnType : null },
+    polygonOffset :	{ num : 1090, argTypes : [GLfloat, GLfloat], returnType : null },
     //doesn't need for playback
     // readPixels :	1091,
-    renderbufferStorage :	[1092, GLenum, GLenum, GLsizei, GLsizei],
-    sampleCoverage :	[1093, GLclampf, GLboolean],
-    scissor :	[1094, GLint, GLint, GLsizei, GLsizei],
-    shaderSource :	[1095, GLref, GLstring],
-    stencilFunc :	[1096, GLenum, GLint, GLuint],
-    stencilFuncSeparate :	[1097, GLenum, GLenum, GLint, GLuint],
-    stencilMask :	[1098, GLuint],
-    stencilMaskSeparate :	[1099, GLenum, GLuint],
-    stencilOp :	[1100, GLenum, GLenum, GLenum],
-    stencilOpSeparate :	[1101, GLenum, GLenum, GLenum, GLenum],
+    renderbufferStorage :	{ num : 1092, argTypes : [GLenum, GLenum, GLsizei, GLsizei], returnType : null },
+    sampleCoverage :	{ num : 1093, argTypes : [GLclampf, GLboolean], returnType : null },
+    scissor :	{ num : 1094, argTypes : [GLint, GLint, GLsizei, GLsizei], returnType : null },
+    shaderSource :	{ num : 1095, argTypes : [GLref, GLstring], returnType : null },
+    stencilFunc :	{ num : 1096, argTypes : [GLenum, GLint, GLuint], returnType : null },
+    stencilFuncSeparate :	{ num : 1097, argTypes : [GLenum, GLenum, GLint, GLuint], returnType : null },
+    stencilMask :	{ num : 1098, argTypes : [GLuint], returnType : null },
+    stencilMaskSeparate :	{ num : 1099, argTypes : [GLenum, GLuint], returnType : null },
+    stencilOp :	{ num : 1100, argTypes : [GLenum, GLenum, GLenum], returnType : null },
+    stencilOpSeparate :	{ num : 1101, argTypes : [GLenum, GLenum, GLenum, GLenum], returnType : null },
     texImage2D :	function (...args)  {
         //TODO 1102
         const argTypes = [
-            [11020, GLenum, GLint, GLenum, GLsizei, GLsizei, GLint, GLenum, GLenum, GLimage],
-            [11021, GLenum, GLint, GLenum, GLenum, GLenum, GLimage],
+            { num : 11020, argTypes : [GLenum, GLint, GLenum, GLsizei, GLsizei, GLint, GLenum, GLenum, GLimage], returnType : null },
+            { num : 11021, argTypes : [GLenum, GLint, GLenum, GLenum, GLenum, GLimage], returnType : null },
             //webgl 2 methods
             // [20231, GLenum, GLint, GLint, GLint, GLsizei, GLsizei, GLenum, GLimage],
             // [20232, GLenum, GLint, GLenum, GLsizei, GLsizei, GLint, GLimage, GLuint, GLuint]
@@ -199,12 +195,12 @@ export const GLcommands = {
         }
         return argTypes;
     },
-    texParameterf :	[11030, GLenum, GLenum, GLfloat],
-    texParameteri :	[11031, GLenum, GLenum, GLint],
+    texParameterf : { num : 11030, argTypes : [GLenum, GLenum, GLfloat], returnType : null },
+    texParameteri : { num : 11031, argTypes : [GLenum, GLenum, GLint], returnType : null },
     texSubImage2D :	function (...args)  {
         const argTypes = [
-            [11040, GLenum, GLint, GLint, GLint, GLsizei, GLsizei, GLenum, GLenum, GLimage],
-            [11041, GLenum, GLint, GLint, GLint, GLenum, GLenum, GLimage]
+            { num : 11040, argTypes : [GLenum, GLint, GLint, GLint, GLsizei, GLsizei, GLenum, GLenum, GLimage], returnType : null },
+            { num : 11041, argTypes : [GLenum, GLint, GLint, GLint, GLenum, GLenum, GLimage], returnType : null }
             //webgl 2 methods
             // [20231, GLenum, GLint, GLint, GLint, GLsizei, GLsizei, GLenum, GLimage],
             // [20232, GLenum, GLint, GLenum, GLsizei, GLsizei, GLint, GLimage, GLuint, GLuint]
@@ -217,42 +213,42 @@ export const GLcommands = {
         return argTypes;
     },
 
-    uniform1f :	[11050, GLref, GLfloat],
-    uniform2f :	[11051, GLref, GLfloat, GLfloat],
-    uniform3f :	[11052, GLref, GLfloat, GLfloat, GLfloat],
-    uniform4f :	[11053, GLref, GLfloat, GLfloat, GLfloat, GLfloat],
-    uniform1i :	[11054, GLref, GLint],
-    uniform2i :	[11055, GLref, GLint, GLint],
-    uniform3i :	[11056, GLref, GLint, GLint, GLint],
-    uniform4i :	[11057, GLref, GLint, GLint, GLint, GLint],
+    uniform1f : { num : 11050, argTypes : [GLref, GLfloat], returnType : null },
+    uniform2f : { num : 11051, argTypes : [GLref, GLfloat, GLfloat], returnType : null },
+    uniform3f : { num : 11052, argTypes : [GLref, GLfloat, GLfloat, GLfloat], returnType : null },
+    uniform4f : { num : 11053, argTypes : [GLref, GLfloat, GLfloat, GLfloat, GLfloat], returnType : null },
+    uniform1i : { num : 11054, argTypes : [GLref, GLint], returnType : null },
+    uniform2i : { num : 11055, argTypes : [GLref, GLint, GLint], returnType : null },
+    uniform3i : { num : 11056, argTypes : [GLref, GLint, GLint, GLint], returnType : null },
+    uniform4i : { num : 11057, argTypes : [GLref, GLint, GLint, GLint, GLint], returnType : null },
 
-    uniform1fv : [11060, GLref, GLarraybuffer],
-    uniform2fv : [11061, GLref, GLarraybuffer],
-    uniform3fv : [11062, GLref, GLarraybuffer],
-    uniform4fv : [11063, GLref, GLarraybuffer],
-    uniform1iv : [11064, GLref, GLarraybuffer],
-    uniform2iv : [11065, GLref, GLarraybuffer],
-    uniform3iv : [11066, GLref, GLarraybuffer],
-    uniform4iv : [11067, GLref, GLarraybuffer],
+    uniform1fv : { num : 11060, argTypes : [GLref, GLarraybuffer], returnType : null },
+    uniform2fv : { num : 11061, argTypes : [GLref, GLarraybuffer], returnType : null },
+    uniform3fv : { num : 11062, argTypes : [GLref, GLarraybuffer], returnType : null },
+    uniform4fv : { num : 11063, argTypes : [GLref, GLarraybuffer], returnType : null },
+    uniform1iv : { num : 11064, argTypes : [GLref, GLarraybuffer], returnType : null },
+    uniform2iv : { num : 11065, argTypes : [GLref, GLarraybuffer], returnType : null },
+    uniform3iv : { num : 11066, argTypes : [GLref, GLarraybuffer], returnType : null },
+    uniform4iv : { num : 11067, argTypes : [GLref, GLarraybuffer], returnType : null },
 
-    uniformMatrix2fv : [11070, GLref, GLboolean, GLarraybuffer],
-    uniformMatrix3fv : [11071, GLref, GLboolean, GLarraybuffer],
-    uniformMatrix4fv : [11072, GLref, GLboolean, GLarraybuffer],
+    uniformMatrix2fv : { num : 11070, argTypes : [GLref, GLboolean, GLarraybuffer], returnType : null },
+    uniformMatrix3fv : { num : 11071, argTypes : [GLref, GLboolean, GLarraybuffer], returnType : null },
+    uniformMatrix4fv : { num : 11072, argTypes : [GLref, GLboolean, GLarraybuffer], returnType : null },
 
-    useProgram :	[1108, GLref],
-    // validateProgram :	1109, 
+    useProgram : { num : 1108, argTypes : [GLref], returnType : null },
+    // validateProgram :	1109,
 
-    vertexAttrib1f :	[11100, GLlocation, GLfloat],
-    vertexAttrib2f :	[11101, GLlocation, GLfloat, GLfloat],
-    vertexAttrib3f :	[11102, GLlocation, GLfloat, GLfloat, GLfloat],
-    vertexAttrib4f :	[11103, GLlocation, GLfloat, GLfloat, GLfloat, GLfloat],
-    vertexAttrib1fv : [11104, GLlocation, GLarraybuffer],
-    vertexAttrib2fv : [11105, GLlocation, GLarraybuffer],
-    vertexAttrib3fv : [11106, GLlocation, GLarraybuffer],
-    vertexAttrib4fv : [11107, GLlocation, GLarraybuffer],
+    vertexAttrib1f : { num : 11100, argTypes : [GLlocation, GLfloat], returnType : null },
+    vertexAttrib2f : { num : 11101, argTypes : [GLlocation, GLfloat, GLfloat], returnType : null },
+    vertexAttrib3f : { num : 11102, argTypes : [GLlocation, GLfloat, GLfloat, GLfloat], returnType : null },
+    vertexAttrib4f : { num : 11103, argTypes : [GLlocation, GLfloat, GLfloat, GLfloat, GLfloat], returnType : null },
+    vertexAttrib1fv : { num : 11104, argTypes : [GLlocation, GLarraybuffer], returnType : null },
+    vertexAttrib2fv : { num : 11105, argTypes : [GLlocation, GLarraybuffer], returnType : null },
+    vertexAttrib3fv : { num : 11106, argTypes : [GLlocation, GLarraybuffer], returnType : null },
+    vertexAttrib4fv : { num : 11107, argTypes : [GLlocation, GLarraybuffer], returnType : null },
 
-    vertexAttribPointer :	[1111, GLlocation, GLint, GLenum, GLboolean, GLsizei, GLintptr],
-    viewport :	[1112, GLint, GLint, GLsizei, GLsizei]
+    vertexAttribPointer : { num : 1111, argTypes : [GLlocation, GLint, GLenum, GLboolean, GLsizei, GLintptr], returnType : null },
+    viewport : { num : 1112, argTypes : [GLint, GLint, GLsizei, GLsizei], returnType : null }
 };
 
 export const GLrefCreators = {

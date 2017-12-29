@@ -1,6 +1,6 @@
 import * as types from './gl-types';
 import { GLcommands } from './gl-commands';
-import { isFunction } from "./misc";
+import { extend, isFunction } from './misc';
 
 export const GL_REF_KEY = '__gl_buffer_ref_';
 
@@ -16,7 +16,7 @@ for (const p in types.ArrayBufferTypes) {
 
 /**
  * Get type definition of the array
- * @param {TypedArray} arr 
+ * @param {TypedArray} arr
  */
 export function getTypeOfArray(arr) {
     for (const p in types.ArrayBufferTypes) {
@@ -29,7 +29,7 @@ export function getTypeOfArray(arr) {
 
 /**
  * Get type definition by array num
- * @param {Number} num 
+ * @param {Number} num
  */
 export function getTypeOfArrayByNum(num) {
     return bufferTypeMap[num];
@@ -41,17 +41,21 @@ for (const p in GLcommands) {
     const c = GLcommands[p];
     if (isFunction(c)) {
         c().forEach(t => {
-            commandMap[t[0]] = [p, t.slice(1)];
+            const com = extend({}, t);
+            com.name = p;
+            commandMap[t.num] = com;
         });
     } else {
-        commandMap[c[0]] = [p, c.slice(1)];
+        const com = extend({}, c);
+        com.name = p;
+        commandMap[c.num] = com;
     }
 }
 
 /**
  * Get GLCommand definition by command name and arguments
- * @param {String} name 
- * @param {Any[]} args 
+ * @param {String} name
+ * @param {Any[]} args
  */
 export function getCommandTypes(name, ...args) {
     const c = GLcommands[name];
@@ -63,7 +67,7 @@ export function getCommandTypes(name, ...args) {
 
 /**
  * Get GLCommand definistion by mapping num
- * @param {Number} num 
+ * @param {Number} num
  */
 export function getCommandTypesByNum(num) {
     return commandMap[num];

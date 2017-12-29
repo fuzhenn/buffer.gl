@@ -5,14 +5,15 @@ module.exports = function (config) {
         basePath : '.',
         frameworks: ['mocha', 'expect'],
         files: [
+            { pattern : 'src/**/*.js', included : false, watched : true },
             'test/**/*.js'
         ],
         preprocessors: {
             'test/**/*.spec.js': ['rollup']
         },
         rollupPreprocessor: {
-            format: 'umd', 
-            name: 'glbuffer', 
+            format: 'umd',
+            name: 'glbuffer',
             sourcemap: 'inline',
             sourceMap: 'inline'
         },

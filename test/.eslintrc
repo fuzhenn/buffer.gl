@@ -1,0 +1,13 @@
+{
+    "env": {
+      "es6": true,
+      "mocha": true
+    },
+    "parserOptions" : {
+        "sourceType" : "module"
+    },
+    "globals": {
+      "expect": true
+    },
+    "plugins": ["mocha"]
+  }

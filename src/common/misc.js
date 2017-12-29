@@ -2,7 +2,6 @@
  * Whether the object is null or undefined.
  * @param  {Object}  obj - object
  * @return {Boolean}
- * @memberOf Util
  */
 export function isNil(obj) {
     return obj == null;
@@ -33,7 +32,6 @@ export function isNumber(val) {
  * Check whether the object is a string
  * @param {Object} obj
  * @return {Boolean}
- * @memberOf Util
  */
 export function isString(obj) {
     if (isNil(obj)) {
@@ -46,4 +44,20 @@ let uid = 1;
 
 export function UID() {
     return uid++;
+}
+
+/**
+ * Merges the properties of sources into destination object.
+ * @param  {Object} dest   - object to extend
+ * @param  {...Object} src - sources
+ * @return {Object}
+ */
+export function extend(dest) { // (Object[, Object, ...]) ->
+    for (let i = 1; i < arguments.length; i++) {
+        const src = arguments[i];
+        for (const k in src) {
+            dest[k] = src[k];
+        }
+    }
+    return dest;
 }
