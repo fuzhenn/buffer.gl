@@ -36,7 +36,7 @@ export const GLcommands = {
             { num : 10122, argTypes : [GLenum, GLarraybuffer, GLenum, GLuint, GLuint], returnType : null },
             { num : 10121, argTypes : [GLenum, GLarraybuffer, GLenum], returnType : null }
         ];
-        if (isNumber(args[1])) {
+        if (isNumber(args[2])) {
             return argTypes[0];
         } else if (args.length === 5) {
             return argTypes[1];
@@ -75,7 +75,7 @@ export const GLcommands = {
         ];
         if (args.length === 9) {
             return argTypes[2];
-        } else if (isNumber(args[6])) {
+        } else if (isNumber(args[7])) {
             return argTypes[1];
         } else if (args.length > 0) {
             return argTypes[0];

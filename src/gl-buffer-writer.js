@@ -120,11 +120,11 @@ export default class GLBufferWriter {
             let bytesCount = type.bytesCount;
             if (type === GLarraybuffer) {
                 //write array or string value
-                this._writeBuffer(buf, value, bufferTypes[btPointer++], pointer, bufferTypes[btPointer++]);
-                bytesCount = bufferTypes[btPointer];
+                this._writeBuffer(buf, value, bufferTypes[btPointer++], pointer, bufferTypes[btPointer]);
+                bytesCount = bufferTypes[btPointer++];
             } else if (type === GLstring) {
-                this._writeBuffer(buf, value, ArrayBufferTypes.GLUint16Array.num, pointer, bufferTypes[btPointer++]);
-                bytesCount = bufferTypes[btPointer];
+                this._writeBuffer(buf, value, ArrayBufferTypes.GLUint16Array.num, pointer, bufferTypes[btPointer]);
+                bytesCount = bufferTypes[btPointer++];
             } else if (type === GLimage) {
                 const w = bufferTypes[btPointer++],
                     h = bufferTypes[btPointer++];
@@ -169,7 +169,7 @@ export default class GLBufferWriter {
         const arr = new arrType.type(buffer, pointer, size / arrType.type.BYTES_PER_ELEMENT);
         if (isString(value)) {
             for (let i = 0, l = value.length; i < l; i++) {
-                arr[i] = value[i].charCodeAt(i);
+                arr[i] = value.charCodeAt(i);
             }
         } else {
             arr.set(value);

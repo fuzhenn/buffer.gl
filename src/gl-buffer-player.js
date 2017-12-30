@@ -92,20 +92,20 @@ export default class GLBufferPlayer {
                 //[arr type][bytes count]
                 const arrType = getTypeOfArrayByNum(comBuffer[cPt++]).type;
                 bytesCount = comBuffer[cPt++];
-                const v = this._readArray(vPt, values, arrType, bytesCount);
+                const v = this._readArray(vPt, values.buffer, arrType, bytesCount);
                 args.push(v);
             } else if (type === GLstring) {
                 //read value of string
                 //[bytes count]
                 bytesCount = comBuffer[cPt++];
-                const str = this._readString(vPt, values, bytesCount);
+                const str = this._readString(vPt, values, bytesCount / 2);
                 args.push(str);
             } else if (type === GLimage) {
                 //[width][height]
                 const w = comBuffer[cPt++],
                     h = comBuffer[cPt++];
                 bytesCount = w * h * 4;
-                const arr = this._readArray(vPt, values, Uint8ClampedArray, bytesCount);
+                const arr = this._readArray(vPt, values.buffer, Uint8ClampedArray, bytesCount);
                 const imageData = this._createImageData(arr, w, h);
                 args.push(imageData);
             } else {
@@ -149,16 +149,12 @@ export default class GLBufferPlayer {
     }
 
     _readArray(pt, values, arrType, arrSize) {
-        return new arrType(values, pt, arrSize);
+        return new arrType(values, pt, arrSize / arrType.BYTES_PER_ELEMENT);
     }
 
     _readString(pt, values, strSize) {
-        const str = [];
-        for (let i = 0; i < strSize; i += 2) {
-            const code = values.getUint16(pt + i);
-            str.push(String.fromCharCode(code));
-        }
-        return str.join('');
+        const arr = new Uint16Array(values.buffer, pt, strSize);
+        return String.fromCharCode.apply(null, arr);
     }
 
     _createImageData(arr, w, h) {

@@ -105,6 +105,25 @@ describe('GL Buffer specs', function () {
             command = commands[2];
             expect(command.name).to.be.eql('bindBuffer');
             expect(command.args).to.be.eql([0x8892, 'prefix-' + (uid + 2)]);
+
+            command = commands[3];
+            expect(command.name).to.be.eql('bufferData');
+            expect(command.args).to.be.eql([0x8892, new Float32Array([1.0, 2.0, 3.0]), 0x88E4]);
+
+            command = commands[4];
+            expect(command.name).to.be.eql('getAttribLocation');
+            expect(command.args).to.be.eql(['prefix-' + (uid + 1), 'a_position']);
+            expect(command.ref).to.be.eql('prefix-' + positionLocation);
+
+            command = commands[5];
+            expect(command.name).to.be.eql('enableVertexAttribArray');
+            expect(command.args).to.be.eql(['prefix-' + positionLocation]);
+
+            command = commands[6];
+            expect(command.name).to.be.eql('vertexAttribPointer');
+            expect(command.args).to.be.eql(['prefix-' + positionLocation, 4, 0x1406/* gl.FLOAT */, false, 0, 0]);
+
+            expect(player.refMap['prefix-' + positionLocation]).to.be.eql(positionLocation);
         });
     });
 });
