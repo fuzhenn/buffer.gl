@@ -59,6 +59,9 @@ for (const p in GLcommands) {
  */
 export function getCommandTypes(name, ...args) {
     const c = GLcommands[name];
+    if (!c) {
+        return null;
+    }
     if (!isFunction(c)) {
         return c;
     }

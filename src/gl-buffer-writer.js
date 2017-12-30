@@ -1,11 +1,12 @@
-import { GLcommands, GLrefCreators } from './common/gl-commands';
+import { GLrefCreators } from './common/gl-commands';
 import { getCommandTypes, GL_REF_KEY, getTypeOfArray, getTypeOfArrayByNum } from './common/util';
 import { UID, isString } from './common/misc';
-import { GLref, GLstring, GLarraybuffer, GLimage, ArrayBufferTypes } from './common/gl-types';
+import { GLref, GLstring, GLarraybuffer, GLimage, ArrayBufferTypes, GLboolean } from './common/gl-types';
 
 export default class GLBufferWriter {
     constructor(options = {}) {
         this.options = options;
+        this.refPrefix = options.refPrefix;
         this.reset();
     }
 
@@ -15,7 +16,7 @@ export default class GLBufferWriter {
      * @param {Any[]} args
      */
     addCommand(name, ...args) {
-        const commandTypes = GLcommands[name];
+        const commandTypes = getCommandTypes(name, ...args);
         if (!commandTypes) {
             if (this.options.debug) {
                 // command ignored
@@ -30,7 +31,7 @@ export default class GLBufferWriter {
         if (l !== args.length) {
             throw new Error(`[addCommand] wrong argument number ${name}`);
         }
-        this._saveCommand(name, ...args);
+        this._saveCommand(commandTypes, name, ...args);
         return this;
     }
 
@@ -48,13 +49,14 @@ export default class GLBufferWriter {
 
     getBuffer() {
         return {
+            refPrefix : this.refPrefix || '',
             commands : new Uint32Array(this.commands),
             values : this.valueBuffers
         };
     }
 
-    _saveCommand(name, ...args) {
-        const commandTypes = getCommandTypes(name, ...args);
+    _saveCommand(commandTypes, name, ...args) {
+        // const commandTypes = getCommandTypes(name, ...args);
         if (GLrefCreators[name]) {
             const obj = args[args.length - 1];
             if (!obj[GL_REF_KEY]) {
@@ -129,6 +131,9 @@ export default class GLBufferWriter {
                 this._writeBuffer(buf, value, ArrayBufferTypes.GLUint8ClampedArray.num, pointer, w * h * 4);
                 bytesCount = w * h * 4;
             } else {
+                if (type === GLboolean) {
+                    value = value ? 1 : 0;
+                }
                 //write common values
                 view['set' + type.type](pointer, value);
             }
@@ -161,7 +166,7 @@ export default class GLBufferWriter {
      */
     _writeBuffer(buffer, value, type, pointer, size) {
         const arrType = getTypeOfArrayByNum(type);
-        const arr = new arrType.type(buffer, pointer, size);
+        const arr = new arrType.type(buffer, pointer, size / arrType.type.BYTES_PER_ELEMENT);
         if (isString(value)) {
             for (let i = 0, l = value.length; i < l; i++) {
                 arr[i] = value[i].charCodeAt(i);
@@ -184,18 +189,18 @@ export default class GLBufferWriter {
         const types = commandTypes.argTypes;
         for (let i = 0, l = types.length; i < l; i++) {
             if (types[i] === GLarraybuffer) {
-                const arr = args[i - 1];
+                const arr = args[i];
                 const arrType = getTypeOfArray(arr);
                 bytesCount = arr.length * arrType.type.BYTES_PER_ELEMENT;
                 //[arr type][bytes count]
                 bufferTypes.push(arrType.num, bytesCount);
             } else if (types[i] === GLstring) {
-                const str = args[i - 1];
+                const str = args[i];
                 bytesCount = str.length * 2;
                 //[bytes count]
                 bufferTypes.push(bytesCount);
             } else if (types[i] === GLimage) {
-                const img = args[i - 1];
+                const img = args[i];
                 const imgData = this._readImage(img);
                 bytesCount = imgData.data.length;
                 const w = imgData.width,

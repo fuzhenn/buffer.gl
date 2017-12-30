@@ -1,14 +1,14 @@
 export const GLref = { type : 'Uint32', num : 0, bytesCount : 4 };
 export const GLlocation = { type : 'Uint32', num : 1, bytesCount : 4 };
 export const GLenum = { type : 'Uint32', num : 100, bytesCount : 4 };
-export const GLboolean = { type : 'Boolean', num : 101, bytesCount : 1 };
+export const GLboolean = { type : 'Uint8', num : 101, bytesCount : 1 };
 export const GLbitfield = { type : 'Uint32', num : 102, bytesCount : 4 };
 export const GLbyte = { type : 'Int8', num : 103, bytesCount : 1 };
 export const GLshort = { type : 'Int16', num : 104, bytesCount : 2 };
 export const GLint = { type : 'Int32', num : 105, bytesCount : 4 };
 export const GLsizei = { type : 'Int32', num : 106, bytesCount : 4 };
-export const GLintptr = { type : 'Int64', num : 107, bytesCount : 8 };
-export const GLsizeiptr = { type : 'Int64', num : 108, bytesCount : 8 };
+export const GLintptr = { type : 'Uint32', num : 107, bytesCount : 4 };
+export const GLsizeiptr = { type : 'Uint32', num : 108, bytesCount : 4 };
 export const GLubyte = { type : 'Uint8', num : 109, bytesCount : 1 };
 export const GLushort = { type : 'Uint16', num : 110, bytesCount : 2 };
 export const GLuint = { type : 'Uint32', num : 111, bytesCount : 4 };

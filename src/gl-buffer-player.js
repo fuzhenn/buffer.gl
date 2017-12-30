@@ -1,7 +1,7 @@
 import { isFunction } from './common/misc';
 import { getCommandTypesByNum, getTypeOfArrayByNum } from './common/util';
-import { GLrefCreators, GLlocationGetters } from './common/gl-commands';
-import { GLref, GLlocation, GLarraybuffer, GLstring, GLimage } from './common/gl-types';
+// import { GLrefCreators, GLlocationGetters } from './common/gl-commands';
+import { GLref, GLlocation, GLarraybuffer, GLstring, GLimage, GLboolean } from './common/gl-types';
 
 export default class GLBufferPlayer {
     constructor() {
@@ -66,13 +66,13 @@ export default class GLBufferPlayer {
         let cPt = 0, vIdx = 0;
         while (cPt < commands.length) {
             const values = new DataView(data.values[vIdx++]);
-            const c = this._readCommand(cPt, commands, values);
+            const c = this._readCommand(cPt, commands, values, data.refPrefix || '');
             cPt = c.cPt;
             this.commands.push(c.command);
         }
     }
 
-    _readCommand(cPt, comBuffer, values)  {
+    _readCommand(cPt, comBuffer, values, refPrefix)  {
         const commandNum = comBuffer[cPt++];
         const commandTypes = getCommandTypesByNum(commandNum);
         //command method name
@@ -110,7 +110,12 @@ export default class GLBufferPlayer {
                 args.push(imageData);
             } else {
                 //common values: int8/uint8/int16..
-                const v = values[`get${type.type}`](vPt);
+                let v = values[`get${type.type}`](vPt);
+                if (type === GLboolean) {
+                    v = !!v;
+                } else if (type === GLref || type === GLlocation) {
+                    v = refPrefix + v;
+                }
                 args.push(v);
             }
             vPt += bytesCount;
@@ -123,11 +128,11 @@ export default class GLBufferPlayer {
                 const l = returnType.length;
                 for (let i = 0; i < l; i++) {
                     const t = returnType[i].type;
-                    ref.push(values[`get${t}`](vPt));
+                    ref.push(refPrefix + values[`get${t}`](vPt));
                     vPt += returnType[i].bytesCount;
                 }
             } else {
-                ref = values[`get${returnType.type}`](vPt);
+                ref = refPrefix + values[`get${returnType.type}`](vPt);
                 vPt += returnType.bytesCount;
             }
         }
