@@ -3,6 +3,8 @@ import { getCommandTypesByNum, getTypeOfArrayByNum } from './common/util';
 // import { GLrefCreators, GLlocationGetters } from './common/gl-commands';
 import { GLref, GLlocation, GLarraybuffer, GLstring, GLimage, GLboolean } from './common/gl-types';
 
+const textDecoder = typeof TextDecoder !== 'undefined' ? new TextDecoder('utf-8') : null;
+
 export default class GLBufferPlayer {
     constructor() {
         this.commands = [];
@@ -98,7 +100,7 @@ export default class GLBufferPlayer {
                 //read value of string
                 //[bytes count]
                 bytesCount = comBuffer[cPt++];
-                const str = this._readString(vPt, values, bytesCount / 2);
+                const str = this._readString(vPt, values, bytesCount);
                 args.push(str);
             } else if (type === GLimage) {
                 //[width][height]
@@ -153,8 +155,13 @@ export default class GLBufferPlayer {
     }
 
     _readString(pt, values, strSize) {
-        const arr = new Uint16Array(values.buffer, pt, strSize);
-        return String.fromCharCode.apply(null, arr);
+        if (textDecoder) {
+            const arr = new Uint8Array(values.buffer, pt, strSize);
+            return textDecoder.decode(arr);
+        } else {
+            const arr = new Uint16Array(values.buffer, pt, strSize / 2);
+            return String.fromCharCode.apply(null, arr);
+        }
     }
 
     _createImageData(arr, w, h) {

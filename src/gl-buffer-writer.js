@@ -3,6 +3,8 @@ import { getCommandTypes, GL_REF_KEY, getTypeOfArray, getTypeOfArrayByNum } from
 import { UID, isString } from './common/misc';
 import { GLref, GLstring, GLarraybuffer, GLimage, ArrayBufferTypes, GLboolean } from './common/gl-types';
 
+const textEncoder = typeof TextEncoder !== 'undefined' ? new TextEncoder('utf-8') : null;
+
 export default class GLBufferWriter {
     constructor(options = {}) {
         this.options = options;
@@ -66,8 +68,9 @@ export default class GLBufferWriter {
             }
         }
         const { bufferTypes, size } = this._getBufferTypes(commandTypes, ...args);
-        this._writeCommand(commandTypes, bufferTypes);
         const buffer = this._writeArgValues(args, commandTypes, bufferTypes, size);
+        //bufferTypes may be updated by _writeArgValues
+        this._writeCommand(commandTypes, bufferTypes);
         this.valueBuffers.push(buffer);
     }
 
@@ -123,8 +126,17 @@ export default class GLBufferWriter {
                 this._writeBuffer(buf, value, bufferTypes[btPointer++], pointer, bufferTypes[btPointer]);
                 bytesCount = bufferTypes[btPointer++];
             } else if (type === GLstring) {
-                this._writeBuffer(buf, value, ArrayBufferTypes.GLUint16Array.num, pointer, bufferTypes[btPointer]);
-                bytesCount = bufferTypes[btPointer++];
+                if (textEncoder) {
+                    const strBytes = bufferTypes[btPointer];
+                    const arr = new Uint8Array(buf, pointer, strBytes.byteLength);
+                    arr.set(strBytes);
+                    bytesCount = strBytes.byteLength;
+                    //replace string array with bytesCount that player needs
+                    bufferTypes[btPointer++] = bytesCount;
+                } else {
+                    this._writeBuffer(buf, value, ArrayBufferTypes.GLUint16Array.num, pointer, bufferTypes[btPointer]);
+                    bytesCount = bufferTypes[btPointer++];
+                }
             } else if (type === GLimage) {
                 const w = bufferTypes[btPointer++],
                     h = bufferTypes[btPointer++];
@@ -196,9 +208,15 @@ export default class GLBufferWriter {
                 bufferTypes.push(arrType.num, bytesCount);
             } else if (types[i] === GLstring) {
                 const str = args[i];
-                bytesCount = str.length * 2;
-                //[bytes count]
-                bufferTypes.push(bytesCount);
+                if (textEncoder) {
+                    const arr = textEncoder.encode(str);
+                    bytesCount = arr.byteLength;
+                    bufferTypes.push(arr);
+                } else {
+                    bytesCount = str.length * 2;
+                    //[bytes count]
+                    bufferTypes.push(bytesCount);
+                }
             } else if (types[i] === GLimage) {
                 const img = args[i];
                 const imgData = this._readImage(img);

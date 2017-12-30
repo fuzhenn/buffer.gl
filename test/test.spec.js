@@ -123,7 +123,7 @@ describe('GL Buffer specs', function () {
             expect(command.name).to.be.eql('vertexAttribPointer');
             expect(command.args).to.be.eql(['prefix-' + positionLocation, 4, 0x1406/* gl.FLOAT */, false, 0, 0]);
 
-            expect(player.refMap['prefix-' + positionLocation]).to.be.eql(positionLocation);
+            // expect(player.refMap['prefix-' + positionLocation]).to.be.eql(positionLocation);
         });
     });
 });
