@@ -20,11 +20,14 @@ export default class GLBufferPlayer {
         return this.commands;
     }
 
-    playback(gl) {
+    playback(gl, step) {
         const commands = this.getCommands();
         commands.forEach(c => {
             const name = c.name, ref = c.command.ref;
-            const rargs = this._prepareArgs(c);
+            let rargs = this._prepareArgs(c);
+            if (isFunction(step)) {
+                rargs = step(name, rargs);
+            }
             const result = gl[name].apply(gl, rargs);
             if (ref) {
                 this.refMap[ref] = result;
@@ -154,12 +157,12 @@ export default class GLBufferPlayer {
         return new arrType(values, pt, arrSize / arrType.BYTES_PER_ELEMENT);
     }
 
-    _readString(pt, values, strSize) {
+    _readString(pt, values, bytesCount) {
         if (textDecoder) {
-            const arr = new Uint8Array(values.buffer, pt, strSize);
+            const arr = new Uint8Array(values.buffer, pt, bytesCount);
             return textDecoder.decode(arr);
         } else {
-            const arr = new Uint16Array(values.buffer, pt, strSize / 2);
+            const arr = new Uint16Array(values.buffer, pt, bytesCount / 2);
             return String.fromCharCode.apply(null, arr);
         }
     }
