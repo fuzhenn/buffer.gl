@@ -15,6 +15,10 @@ function MockBuffer() {
 
 }
 
+function MockUniformLocation() {
+
+}
+
 describe('GL Buffer specs', function () {
     it('should create a writer', function () {
         var writer = new GLBufferWriter({ debug : true });
@@ -29,12 +33,12 @@ describe('GL Buffer specs', function () {
     context('gl commands', function () {
         it('should support normal methods', function () {
             var writer = new GLBufferWriter({ debug : true });
-            var buffer = writer
+            var bufferData = writer
                 .addCommand('activeTexture', 0x84C0 /* gl.TEXTURE0 */)
                 .getBuffer();
 
             var player = new GLBufferPlayer();
-            player.addBuffer(buffer);
+            player.addBuffer(bufferData);
             var commands = player.getCommands();
             expect(commands.length).to.be.eql(1);
             var command = commands[0];
@@ -46,14 +50,14 @@ describe('GL Buffer specs', function () {
             var writer = new GLBufferWriter({ debug : true });
             var program = new MockProgram();
             var shader = new MockShader();
-            var buffer = writer
+            var bufferData = writer
                 .addCommand('createProgram', program)
                 .addCommand('createShader', 0x8B31 /* gl.VERTEX_SHADER */, shader)
                 .addCommand('attachShader', program, shader)
                 .getBuffer();
 
             var player = new GLBufferPlayer();
-            player.addBuffer(buffer);
+            player.addBuffer(bufferData);
             var commands = player.getCommands();
             expect(commands.length).to.be.eql(3);
             var command = commands[0];
@@ -75,7 +79,7 @@ describe('GL Buffer specs', function () {
             var writer = new GLBufferWriter({ debug : true, refPrefix : 'prefix-' });
             var program = new MockProgram();
             var buffer = new MockBuffer();
-            var buffer = writer
+            var bufferData = writer
                 .addCommand('createProgram', program)
                 .addCommand('createBuffer', buffer)
                 .addCommand('bindBuffer', 0x8892 /* gl.ArrayBuffer */, buffer)
@@ -88,7 +92,7 @@ describe('GL Buffer specs', function () {
 
 
             var player = new GLBufferPlayer();
-            player.addBuffer(buffer);
+            player.addBuffer(bufferData);
             var commands = player.getCommands();
             expect(commands.length).to.be.eql(7);
 
@@ -123,6 +127,33 @@ describe('GL Buffer specs', function () {
             expect(command.name).to.be.eql('vertexAttribPointer');
             expect(command.args).to.be.eql(['prefix-' + positionLocation, 4, 0x1406/* gl.FLOAT */, false, 0, 0]);
 
+        });
+
+        it('should support methods with uniform location', function () {
+            var uid = UID();
+            var positionLocation = 1;
+            var writer = new GLBufferWriter({ debug : true, refPrefix : 'prefix-' });
+            var program = new MockProgram();
+            var uniformLoc = new MockUniformLocation();
+            var bufferData = writer
+                .addCommand('createProgram', program)
+                .addCommand('getUniformLocation', program, 'u_matrix', uniformLoc)
+                .getBuffer();
+
+            var player = new GLBufferPlayer();
+            player.addBuffer(bufferData);
+            var commands = player.getCommands();
+            expect(commands.length).to.be.eql(2);
+
+            var command = commands[0];
+            expect(command.name).to.be.eql('createProgram');
+            expect(command.args).to.be.eql([]);
+            expect(command.ref).to.be.eql('prefix-' + (uid + 1));
+
+            command = commands[1];
+            expect(command.name).to.be.eql('getUniformLocation');
+            expect(command.args).to.be.eql(['prefix-' + (uid + 1), 'u_matrix']);
+            expect(command.ref).to.be.eql('prefix-' + (uid + 2));
         });
     });
 });
