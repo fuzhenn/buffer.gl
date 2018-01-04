@@ -132,7 +132,7 @@ export const GLcommands = {
     //doesn't need to record getXXX for playback
     // getActiveAttrib :	{ num : 1055, argTypes : [GLref, GLuint], returnType : null },
     // getActiveUniform :	{ num : 1056, argTypes : [GLref, GLuint], returnType : null },
-    getAttachedShaders :	{ num : 1057, argTypes : [GLref], returnType : [GLref, GLref] },
+    getAttachedShaders :	{ num : 1057, argTypes : [GLref], returnType : [GLref] },
     getAttribLocation :	{ num : 1058, argTypes : [GLref, GLstring], returnType : GLlocation },
     // getBufferParameter :	1059,
     // getContextAttributes :	1060,
@@ -258,7 +258,8 @@ export const GLrefCreators = {
     'createRenderbuffer' : 1,
     'createShader' : 1,
     'createTexture' : 1,
-    'getUniformLocation' : 1
+    'getUniformLocation' : 1,
+    'getAttachedShaders' : 1
 };
 
 export const GLlocationGetters = {

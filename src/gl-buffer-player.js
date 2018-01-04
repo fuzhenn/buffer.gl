@@ -130,11 +130,10 @@ export default class GLBufferPlayer {
         if (returnType) {
             if (Array.isArray(returnType)) {
                 ref = [];
-                const l = returnType.length;
-                for (let i = 0; i < l; i++) {
-                    const t = returnType[i].type;
-                    ref.push(refPrefix + values[`get${t}`](vPt));
-                    vPt += returnType[i].bytesCount;
+                const rType = returnType[0].type;
+                while (vPt < values.buffer.byteLength) {
+                    ref.push(refPrefix + values[`get${rType}`](vPt));
+                    vPt += returnType[0].bytesCount;
                 }
             } else {
                 ref = refPrefix + values[`get${returnType.type}`](vPt);

@@ -28,7 +28,7 @@ export default class GLBufferWriter {
         }
         let l = commandTypes.argTypes.length;
         if (commandTypes.returnType) {
-            l += commandTypes.returnType.length || 1;
+            l += 1;
         }
         if (l !== args.length) {
             throw new Error(`[addCommand] wrong argument number ${name}`);
@@ -61,7 +61,15 @@ export default class GLBufferWriter {
         // const commandTypes = getCommandTypes(name, ...args);
         if (GLrefCreators[name]) {
             const obj = args[args.length - 1];
-            if (!obj[GL_REF_KEY]) {
+            if (Array.isArray(obj)) {
+                obj.forEach(o => {
+                    if (!o[GL_REF_KEY]) {
+                        const key = UID();
+                        o[GL_REF_KEY] = key;
+                        this.refMap[key] = o;
+                    }
+                });
+            } else if (!obj[GL_REF_KEY]) {
                 const key = UID();
                 obj[GL_REF_KEY] = key;
                 this.refMap[key] = obj;
@@ -154,10 +162,13 @@ export default class GLBufferWriter {
         const returnType = commandTypes.returnType;
         if (returnType) {
             if (Array.isArray(returnType)) {
-                returnType.forEach(t => {
-                    const value = t === GLref ? values[i++][GL_REF_KEY] : values[i++];
-                    view['set' + t.type](pointer, value);
-                    pointer += t.bytesCount;
+                const rValues = values[i];
+                const rtype = returnType[0];
+
+                rValues.forEach(value => {
+                    const v = rtype === GLref ? value[GL_REF_KEY] : value;
+                    view['set' + rtype.type](pointer, v);
+                    pointer += rtype.bytesCount;
                 });
             } else {
                 //last argument
@@ -234,9 +245,8 @@ export default class GLBufferWriter {
         const returnType = commandTypes.returnType;
         if (returnType) {
             if (Array.isArray(returnType)) {
-                returnType.forEach(t => {
-                    size += t.bytesCount;
-                });
+                const bytesCount =  returnType[0].bytesCount;
+                size += bytesCount * args[args.length - 1].length;
             } else {
                 size += returnType.bytesCount;
             }

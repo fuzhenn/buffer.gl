@@ -110,7 +110,6 @@ describe('GL Buffer specs', function () {
 
         it('should support methods with uniform location', function () {
             var uid = UID();
-            var positionLocation = 1;
             var writer = new GLBufferWriter({ debug : true, refPrefix : 'prefix-' });
             var program = new MockProgram();
             var uniformLoc = new MockUniformLocation();
@@ -126,6 +125,28 @@ describe('GL Buffer specs', function () {
 
             assertCommand(commands[0], 'createProgram', [], 'prefix-' + (uid + 1));
             assertCommand(commands[1], 'getUniformLocation', ['prefix-' + (uid + 1), 'u_matrix'], 'prefix-' + (uid + 2));
+        });
+
+        it('should support getAttachedShaders', function () {
+            var uid = UID();
+            var writer = new GLBufferWriter({ debug : true, refPrefix : 'prefix-' });
+            var program = new MockProgram();
+            var vshader = new MockShader();
+            var fshader = new MockShader();
+            var vshader1 = new MockShader();
+            var fshader1 = new MockShader();
+            var bufferData = writer
+                .addCommand('createProgram', program)
+                .addCommand('getAttachedShaders', program, [vshader, fshader, vshader1, fshader1])
+                .getBuffer();
+
+            var player = new GLBufferPlayer();
+            player.addBuffer(bufferData);
+            var commands = player.getCommands();
+            expect(commands.length).to.be.eql(2);
+
+            assertCommand(commands[1], 'getAttachedShaders', ['prefix-' + (uid + 1)],
+                ['prefix-' + (uid + 2), 'prefix-' + (uid + 3), 'prefix-' + (uid + 4), 'prefix-' + (uid + 5)]);
         });
     });
 });
