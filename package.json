@@ -1,5 +1,5 @@
 {
-  "name": "gl-buffer",
+  "name": "buffer.gl",
   "version": "0.1.0",
   "description": "Convert webgl commands to arraybuffer and vice versa",
   "main": "index.js",
@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/maptalks/gl-buffer.git"
+    "url": "git+https://github.com/fuzhenn/buffer.gl.git"
   },
   "keywords": [
     "webgl",
@@ -19,9 +19,9 @@
   "author": "fuzhenn",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/maptalks/gl-buffer/issues"
+    "url": "https://github.com/fuzhenn/buffer.gl/issues"
   },
-  "homepage": "https://github.com/maptalks/gl-buffer#readme",
+  "homepage": "https://github.com/fuzhenn/buffer.gl#readme",
   "devDependencies": {
     "babel-eslint": "^8.1.2",
     "babel-preset-es2015": "^6.24.1",
