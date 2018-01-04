@@ -19,6 +19,16 @@ function MockUniformLocation() {
 
 }
 
+function assertCommand(command, name, args, result) {
+    expect(command.name).to.be.eql(name);
+    expect(command.args).to.be.eql(args);
+    if (result) {
+        expect(command.ref).to.be.eql(result);
+    } else {
+        expect(command.ref).not.to.be.ok();
+    }
+}
+
 describe('GL Buffer specs', function () {
     it('should create a writer', function () {
         var writer = new GLBufferWriter({ debug : true });
@@ -41,9 +51,8 @@ describe('GL Buffer specs', function () {
             player.addBuffer(bufferData);
             var commands = player.getCommands();
             expect(commands.length).to.be.eql(1);
-            var command = commands[0];
-            expect(command.name).to.be.eql('activeTexture');
-            expect(command.args).to.be.eql([0x84C0]);
+
+            assertCommand(commands[0], 'activeTexture', [0x84C0]);
         });
 
         it('should support methods with reference arguments', function () {
@@ -60,17 +69,10 @@ describe('GL Buffer specs', function () {
             player.addBuffer(bufferData);
             var commands = player.getCommands();
             expect(commands.length).to.be.eql(3);
-            var command = commands[0];
-            expect(command.name).to.be.eql('createProgram');
-            expect(command.args).to.be.eql([]);
 
-            command = commands[1];
-            expect(command.name).to.be.eql('createShader');
-            expect(command.args).to.be.eql([0x8B31]);
-
-            command = commands[2];
-            expect(command.name).to.be.eql('attachShader');
-            expect(command.args).to.be.eql([1, 2]);
+            assertCommand(commands[0], 'createProgram', [], '1');
+            assertCommand(commands[1], 'createShader', [0x8B31], '2');
+            assertCommand(commands[2], 'attachShader', [1, 2]);
         });
 
         it('should support methods with attribute location', function () {
@@ -95,38 +97,15 @@ describe('GL Buffer specs', function () {
             player.addBuffer(bufferData);
             var commands = player.getCommands();
             expect(commands.length).to.be.eql(7);
+            var command;
 
-            var command = commands[0];
-            expect(command.name).to.be.eql('createProgram');
-            expect(command.args).to.be.eql([]);
-            expect(command.ref).to.be.eql('prefix-' + (uid + 1));
-
-            command = commands[1];
-            expect(command.name).to.be.eql('createBuffer');
-            expect(command.args).to.be.eql([]);
-            expect(command.ref).to.be.eql('prefix-' + (uid + 2));
-
-            command = commands[2];
-            expect(command.name).to.be.eql('bindBuffer');
-            expect(command.args).to.be.eql([0x8892, 'prefix-' + (uid + 2)]);
-
-            command = commands[3];
-            expect(command.name).to.be.eql('bufferData');
-            expect(command.args).to.be.eql([0x8892, new Float32Array([1.0, 2.0, 3.0]), 0x88E4]);
-
-            command = commands[4];
-            expect(command.name).to.be.eql('getAttribLocation');
-            expect(command.args).to.be.eql(['prefix-' + (uid + 1), 'a_position']);
-            expect(command.ref).to.be.eql('prefix-' + positionLocation);
-
-            command = commands[5];
-            expect(command.name).to.be.eql('enableVertexAttribArray');
-            expect(command.args).to.be.eql(['prefix-' + positionLocation]);
-
-            command = commands[6];
-            expect(command.name).to.be.eql('vertexAttribPointer');
-            expect(command.args).to.be.eql(['prefix-' + positionLocation, 4, 0x1406/* gl.FLOAT */, false, 0, 0]);
-
+            assertCommand(commands[0], 'createProgram', [], 'prefix-' + (uid + 1));
+            assertCommand(commands[1], 'createBuffer', [], 'prefix-' + (uid + 2));
+            assertCommand(commands[2], 'bindBuffer', [0x8892, 'prefix-' + (uid + 2)]);
+            assertCommand(commands[3], 'bufferData', [0x8892, new Float32Array([1.0, 2.0, 3.0]), 0x88E4]);
+            assertCommand(commands[4], 'getAttribLocation', ['prefix-' + (uid + 1), 'a_position'], 'prefix-' + positionLocation);
+            assertCommand(commands[5], 'enableVertexAttribArray', ['prefix-' + positionLocation]);
+            assertCommand(commands[6], 'vertexAttribPointer', ['prefix-' + positionLocation, 4, 0x1406/* gl.FLOAT */, false, 0, 0]);
         });
 
         it('should support methods with uniform location', function () {
@@ -145,15 +124,8 @@ describe('GL Buffer specs', function () {
             var commands = player.getCommands();
             expect(commands.length).to.be.eql(2);
 
-            var command = commands[0];
-            expect(command.name).to.be.eql('createProgram');
-            expect(command.args).to.be.eql([]);
-            expect(command.ref).to.be.eql('prefix-' + (uid + 1));
-
-            command = commands[1];
-            expect(command.name).to.be.eql('getUniformLocation');
-            expect(command.args).to.be.eql(['prefix-' + (uid + 1), 'u_matrix']);
-            expect(command.ref).to.be.eql('prefix-' + (uid + 2));
+            assertCommand(commands[0], 'createProgram', [], 'prefix-' + (uid + 1));
+            assertCommand(commands[1], 'getUniformLocation', ['prefix-' + (uid + 1), 'u_matrix'], 'prefix-' + (uid + 2));
         });
     });
 });
