@@ -8,7 +8,8 @@
   "scripts": {
     "build": "rollup -c",
     "pretest": "npm run build",
-    "test": "karma start karma.config.js"
+    "test": "karma start karma.config.js",
+    "prepublish": "npm test"
   },
   "repository": {
     "type": "git",
