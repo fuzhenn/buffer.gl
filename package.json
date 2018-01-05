@@ -2,7 +2,9 @@
   "name": "buffer.gl",
   "version": "0.1.0",
   "description": "Convert webgl commands to arraybuffer and vice versa",
-  "main": "index.js",
+  "main": "dist/buffer.gl.js",
+  "module" : "dist/buffer.gl.es.js",
+  "jsnext:main" : "dist/buffer.gl.es.js",
   "scripts": {
     "build": "rollup -c",
     "pretest": "npm run build",
@@ -15,6 +17,10 @@
   "keywords": [
     "webgl",
     "arraybuffer"
+  ],
+  "files": [
+      "dist/buffer.gl.es.js",
+      "dist/buffer.gl.js"
   ],
   "author": "fuzhenn",
   "license": "MIT",
