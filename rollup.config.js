@@ -1,3 +1,5 @@
+import babel from 'rollup-plugin-babel';
+
 export default {
     input: 'src/index.js',
     output: [
@@ -10,5 +12,10 @@ export default {
             format: 'es',
             file: 'dist/gl-buffer.es.js'
         }
+    ],
+    plugins: [
+        babel({
+            exclude: 'node_modules/**'
+        })
     ]
 };
