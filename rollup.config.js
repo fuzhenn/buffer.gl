@@ -6,11 +6,11 @@ export default {
         {
             format: 'umd',
             name: 'glbuffer',
-            file: 'dist/gl-buffer.js'
+            file: 'dist/buffer.gl.js'
         },
         {
             format: 'es',
-            file: 'dist/gl-buffer.es.js'
+            file: 'dist/buffer.gl.es.js'
         }
     ],
     plugins: [
