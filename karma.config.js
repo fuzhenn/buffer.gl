@@ -19,6 +19,6 @@ module.exports = function (config) {
         },
         browsers: ['Chrome'],
         reporters: ['mocha'],
-        singleRun :  false
+        singleRun :  true
     });
 };
